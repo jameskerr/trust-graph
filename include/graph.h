@@ -5,6 +5,7 @@
 #include <map>
 #include <vector>
 #include <string>
+#include "trustNode.h"
 
 class Graph {
 public:
@@ -12,10 +13,18 @@ public:
 	virtual ~Graph();
 
 	void fillMap(std::string file_name);
-	int mostConnected();
-	void show(int key);
-
+	int mostConnectedOutward();
+    int mostConnectedInward();
+	void show(int key, bool outward);
+    unsigned long getSize() {return al.size();}
+    void analyze();
+    
 private:
-	std::map< int, std::vector<int> > al;
+	std::map< int, TrustNode > al;
+    bool analyzed;
+    
+    void examineNodes();
+    void saveCSV();
+    
 };
 #endif
