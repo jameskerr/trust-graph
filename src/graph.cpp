@@ -140,6 +140,9 @@ void Graph::saveCSV(){
     std::ofstream file;
     file.open("trustData.csv", std::ios::out | std::ios::trunc);
     
+    // Print headers to CSV file
+    file << "ID,Outward Trusts,Inward Trusts,Reciprocal Trusts,";
+    
     // Print all nodes to CSV
     for (std::map<int, TrustNode >::iterator i = al.begin(); i != al.end(); ++i) {
         if (!al[i->first].isActive()) continue;
