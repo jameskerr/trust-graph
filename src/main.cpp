@@ -5,7 +5,13 @@ using std::cout;
 using std::endl;
 
 int main() {
-	Graph g("web-Google.txt");
-	g.show(g.mostConnected());
+	Graph g("data.txt");
+	
+	cout << "TOP TRUSTED" << endl;
+	g.topTrusted(5);
+	
+	cout << "TOP TRUSTING" << endl;
+	g.topTrusting(5);
+	
 	return 0;
 }

@@ -9,38 +9,74 @@ using std::cout;
 using std::endl;
 
 Graph::Graph(string file_name) {
+	cout << "Reading data file..." << endl;
 	fillMap(file_name);
+	cout << "Computing trust statistics..." << endl;
+	computeTrustFrequencies();
 }
 
 Graph::~Graph() {
 	//
 }
 
+void Graph::topTrusting(int limit) {
+	int count = 0;
+	for (std::map<int,int>::reverse_iterator i = most_trusting.rbegin(); i != most_trusting.rend(); ++i) {
+		if (count >= limit) return;
+		cout << al[i->second] << endl;
+		++count;
+	}
+}
 
+void Graph::topTrusted(int limit) {
+	int count = 0;
+	for (std::map<int,int>::reverse_iterator i = most_trusted.rbegin(); i != most_trusted.rend(); ++i) {
+		if (count >= limit) return;
+		cout << al[i->second] << endl;
+		++count;
+	}
+}
+
+void Graph::inspect(int key) {
+	cout << "Person #" << key << endl;
+	cout << "Trusts: ";
+	for (std::set<int>::iterator i = al[key].trust_list.begin(); i != al[key].trust_list.end(); ++i)
+		cout << *i << "; ";
+	cout << endl;
+}
+
+void Graph::summary(int key) {
+	cout << al[key];
+}
 
 void Graph::fillMap(std::string file_name) {
 	string DELIMITER = "\t";
 
 	std::ifstream fin;
 	fin.open(file_name.c_str());
-	if (!fin.good()) return;
+	if (!fin.good()) return;	 // Check if the file is good
+
+	string line;
+	for (int i = 0; i < 5; getline(fin, line), ++i); // Skip through the header
 
 	while (!fin.eof()) {
-		string line;
 		getline(fin, line);
-
-		if (line.size() == 0) continue;
+		if (line.size() == 0) continue;  // Continue if it is an empty line
 		
 		try {
+			// PARSE THE LINE
 			int chop_spot = line.find(DELIMITER);
 			string str_from = line.substr(0, chop_spot);
 			string str_to 	= line.substr(chop_spot, line.size());
-			
+			// CAST THE STRING INTO INTS
 			int from = atoi(str_from.c_str());
 			int to   = atoi(str_to.c_str());
-			
-			al[from].push_back(to);
-			
+			// INSERT THE DATA INTO THE MAP
+			al[from].id = from;
+			al[from].trusts(to);
+			al[to].id = to;
+			al[to].isTrustedBy(from);
+
 		} catch(int e) {
 			cout << "Could not cast " << line << " into any ints." << endl;
 		}
@@ -48,17 +84,9 @@ void Graph::fillMap(std::string file_name) {
 	fin.close();
 }
 
-int Graph::mostConnected() {
-	int max = 0;
-	for (std::map<int, std::vector<int> >::iterator i = al.begin(); i != al.end(); ++i) {
-		if (i->second.size() > max) max = i-> first;
+void Graph::computeTrustFrequencies() {
+	for (std::map<int,User>::iterator i = al.begin(); i != al.end(); ++i) {
+		 most_trusting[i->second.trustCount()] = i->first;
+		 most_trusted[i->second.trustedByCount()] = i->first;
 	}
-	return max;
-}
-
-void Graph::show(int key) {
-	cout << "Key: " << key << " has " << al[key].size() << " connections:" << endl;
-	for (std::vector<int>::const_iterator i = al[key].begin(); i != al[key].end(); ++i)
-		cout << *i << endl;
-	cout << endl;
 }
