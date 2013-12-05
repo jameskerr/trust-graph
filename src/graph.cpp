@@ -8,7 +8,10 @@ using std::string;
 using std::cout;
 using std::endl;
 
-Graph::Graph(string file_name) {
+Graph::Graph(string file_name)
+:numNodes(0),
+numEdges(0)
+{
 	cout << "Reading data file..." << endl;
 	fillMap(file_name);
 	cout << "Computing trust statistics..." << endl;
@@ -76,6 +79,19 @@ void Graph::fillMap(std::string file_name) {
 			al[from].trusts(to);
 			al[to].id = to;
 			al[to].isTrustedBy(from);
+            
+            
+            // Update number of nodes (first check to see if 'active', or if node is already in the map)
+            if (!al[from].active()){
+                al[from].activate();
+                ++numNodes;
+            }
+            if (!al[to].active()){
+                al[to].activate();
+                ++numNodes;
+            }
+            // Update number of edges (each line in file is a new edge)
+            ++numEdges;
 
 		} catch(int e) {
 			cout << "Could not cast " << line << " into any ints." << endl;
@@ -89,4 +105,20 @@ void Graph::computeTrustFrequencies() {
 		 most_trusting[i->second.trustCount()] = i->first;
 		 most_trusted[i->second.trustedByCount()] = i->first;
 	}
+}
+
+void Graph::toCSV(){
+    std::ofstream file;
+    file.open("trustData.csv", std::ios::trunc|std::ios::out);
+    
+    for (std::map<int,User>::iterator i = al.begin(); i != al.end(); ++i) {
+        // Make sure user exists in map
+        if (!al[i->first].active()) continue;;
+        
+        // Write out line to file
+        file << al[i->first].toCSV() << endl;
+    }
+    
+    file.close();
+    
 }

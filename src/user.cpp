@@ -1,4 +1,5 @@
 #include "user.h"
+#include <sstream>
 
 User::User(const User& source) {
 	id = source.id;
@@ -33,4 +34,28 @@ std::ostream& operator << (std::ostream& out, User& user) {
 
 bool operator < (const User& source, const User& other) { 
 	return (source.id < other.id); 
+}
+
+std::string User::toCSV(){
+    int recip = 0;
+    
+    // Calculate reciprocal trusts
+    for (std::set<int>::iterator i = trust_list.begin(); i != trust_list.end(); ++i){
+        // If an element it trusts is also trusing it, increment recip
+        if (trusted_by_list.find(*i) != trusted_by_list.end()){
+            ++recip;
+        }
+    }
+    
+    std::stringstream ssID;
+    ssID << id;
+    std::stringstream ssTrusts;
+    ssTrusts << trustCount();
+    std::stringstream ssTrustedBy;
+    ssTrustedBy << trustedByCount();
+    std::stringstream ssRecipTrusts;
+    ssRecipTrusts << recip;
+    
+    return ssID.str() + ',' + ssTrusts.str() + ',' + ssTrustedBy.str() + ',' + ssRecipTrusts.str() + ',';
+    
 }

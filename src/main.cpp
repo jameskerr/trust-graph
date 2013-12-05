@@ -13,5 +13,10 @@ int main() {
 	cout << "TOP TRUSTING" << endl;
 	g.topTrusting(5);
 	
+    //g.toCSV();
+    
+    cout<< "NumNodes: " << g.getNumNodes() << endl;
+    cout << "Edges: " << g.getNumEdges() << endl;
+    
 	return 0;
 }

@@ -26,10 +26,15 @@ public:
 	inline void trusts(int u) 		{ trust_list.insert(u); }
 	inline int 	trustedByCount() 	{ return trusted_by_list.size(); }
 	inline void isTrustedBy(int u)  { trusted_by_list.insert(u); }
+    std::string toCSV();
 
+    void activate()                 { isActive = true; }
+    bool active()                   { return isActive; }
+    
 private:
 	int id;
-	
+	bool isActive;
+    
 	std::set<int> trust_list;
 	std::set<int> trusted_by_list;
 };
