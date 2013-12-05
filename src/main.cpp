@@ -6,12 +6,11 @@ using std::endl;
 
 int main() {
 	Graph g("data.txt");
-	
-	cout << "TOP TRUSTED" << endl;
-	g.topTrusted(5);
-	
-	cout << "TOP TRUSTING" << endl;
-	g.topTrusting(5);
+	//g.inspect(4);
+	//g.inspect(109);
+	g.topTrusted(2);
+	g.topTrusting(2);
+	g.shortestPath(31, 888);
 	
     //g.toCSV();
     

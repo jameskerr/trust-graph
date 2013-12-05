@@ -1,8 +1,10 @@
 #include "graph.h"
 
+
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <queue>
 
 using std::string;
 using std::cout;
@@ -21,6 +23,51 @@ numEdges(0)
 Graph::~Graph() {
 	//
 }
+
+void Graph::shortestPath(int a, int b) {
+	// Neither of them exist
+	if (al.find(a) == al.end()) {
+		cout << "User #" << a << "does not exist" << endl;
+		return;
+	}
+	if (al.find(b) == al.end()) {
+		cout << "User #" << b << "does not exist" << endl;
+		return;
+	}
+
+	std::queue<int> pending;
+	std::set<int> visited;
+	std::map<int, SearchNode> path; // <ids, nodes>
+
+	path[a] = SearchNode(-1,0); // id, parent, cost 
+	pending.push(a);
+
+	while (pending.size() != 0) {
+		int current = pending.front(); pending.pop();
+
+		for (std::set<int>::iterator i = al[current].trust_list.begin(); i != al[current].trust_list.end(); ++i){
+			if (*i == b) {
+				cout << "I found the shortest path!" << endl;
+				int cursor = current;
+				cout << b << endl;
+				while (cursor >= 0) {
+					cout << cursor << endl;
+					cursor = path[cursor].parent;
+				}
+				return;
+			}// all done
+			if (visited.find(*i) != visited.end()) continue;
+			pending.push(*i);
+			if (path[*i].cost > path[current].cost + 1) {
+				path[*i].cost = path[current].cost + 1;
+				path[*i].parent = current;
+			}
+		}
+		visited.insert(current);
+	}
+	cout << "There is not a connection between the two." << endl;
+}
+
 
 void Graph::topTrusting(int limit) {
 	int count = 0;
@@ -60,7 +107,7 @@ void Graph::fillMap(std::string file_name) {
 	if (!fin.good()) return;	 // Check if the file is good
 
 	string line;
-	for (int i = 0; i < 5; getline(fin, line), ++i); // Skip through the header
+	for (int i = 0; i < 4; getline(fin, line), ++i); // Skip through the header
 
 	while (!fin.eof()) {
 		getline(fin, line);

@@ -7,6 +7,7 @@
 #include <string>
 
 #include "user.h"
+#include "searchNode.h"
 
 
 class Graph {
@@ -16,6 +17,7 @@ public:
 	virtual ~Graph();
 
 	// PUBLIC FUNCTIONS
+	void shortestPath(int a, int b);
 	void topTrusting(int limit);
 	void topTrusted(int limit);
 	void inspect(int key);
