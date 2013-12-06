@@ -53,8 +53,7 @@ COMMENTS:
 
 REED:
 
-
-
+This was empowering. It was nice to finish the semester applying what we know to something that might actually, truly, in real life be useful to someone, rather than the usual generic academic stuff. I hope even though our analysis ended up being a tad uninteresting, I hope we still impressed you... somehow.
 
 
 
