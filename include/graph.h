@@ -22,6 +22,7 @@ public:
 	void topTrusted(int limit);
 	void inspect(int key);
 	void summary(int key);
+    void getTransClosure();
     void toCSV();
     
     // Getters
@@ -35,6 +36,9 @@ private:
 
     int numNodes;
     int numEdges;
+    bool** tc;
+    
+    bool transClosureCaclulated;
     
 	// PRIVATE FUNCTIONS
 	void fillMap(std::string file_name);

@@ -12,7 +12,8 @@ using std::endl;
 
 Graph::Graph(string file_name)
 :numNodes(0),
-numEdges(0)
+numEdges(0),
+transClosureCaclulated(false)
 {
 	cout << "Reading data file..." << endl;
 	fillMap(file_name);
@@ -109,6 +110,9 @@ void Graph::fillMap(std::string file_name) {
 	string line;
 	for (int i = 0; i < 4; getline(fin, line), ++i); // Skip through the header
 
+    // This will hold the associative value used by each node in the adjacency matrix
+    int counter = 0;
+    
 	while (!fin.eof()) {
 		getline(fin, line);
 		if (line.size() == 0) continue;  // Continue if it is an empty line
@@ -130,11 +134,11 @@ void Graph::fillMap(std::string file_name) {
             
             // Update number of nodes (first check to see if 'active', or if node is already in the map)
             if (!al[from].active()){
-                al[from].activate();
+                al[from].activate(counter);
                 ++numNodes;
             }
             if (!al[to].active()){
-                al[to].activate();
+                al[to].activate(counter);
                 ++numNodes;
             }
             // Update number of edges (each line in file is a new edge)
@@ -152,6 +156,71 @@ void Graph::computeTrustFrequencies() {
 		 most_trusting[i->second.trustCount()] = i->first;
 		 most_trusted[i->second.trustedByCount()] = i->first;
 	}
+}
+
+void Graph::getTransClosure(){
+    // Don't want to do this again
+    if (transClosureCaclulated){
+        cout << "Transitive closure has already been calculated" << endl;
+        return;
+    }
+    
+    // First construct an adjacency matrix
+    
+    cout << "Constructing adjacency matrix..." << endl;
+    
+    
+    tc = new bool*[numNodes];
+    for (int i = 0; i < numNodes; ++i){
+        tc[i] = new bool[numNodes];
+        for (int j = 0; j < numNodes; ++j){
+            // set all to false
+            tc[i][j] = false;
+        }
+        // connected to self
+        tc[i][i] = true;
+    }
+    
+    // Connect to neighbors
+    for (std::map<int,User>::iterator i = al.begin(); i != al.end(); ++i){
+        // Cannot access set of neighbors from graph
+        al[i->first].updateNeighbors(tc);
+    }
+    
+    
+    // Progress bar
+    cout<< "Calculating Transitive Closure"<<endl;
+    cout<< "0  10  20  30  40  50  60  70  80  90  100"<<endl;
+    float progress = 0.0;
+    int oldPos = 0;
+    int barWidth = 42;
+    
+    
+    
+    // Transitive closure
+    //
+    
+    for (int i = 0; i < numNodes; ++i){
+        
+        // Update progress bar
+        progress = float(i) / float(numNodes);
+        int pos = barWidth * progress;
+        if (pos > oldPos){
+            oldPos = pos;
+            cout<<'#';
+        }
+        //
+        
+        for (int j = 0; j < numNodes; ++j){
+            for (int k = 0; k < numNodes; ++k) {
+                tc [i][k] = (tc[i][j] && tc[j][k]);
+            }
+        }
+    }
+    cout << endl;
+    
+    // Set to true, allowing use of the information
+    transClosureCaclulated = true;
 }
 
 void Graph::toCSV(){

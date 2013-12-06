@@ -36,6 +36,14 @@ bool operator < (const User& source, const User& other) {
 	return (source.id < other.id); 
 }
 
+void User::updateNeighbors(bool ** tc){
+    // set true for all neighbors
+        // constructs adjacency vector
+    for (std::set<int>::iterator i = trust_list.begin(); i != trust_list.end(); ++i){
+        tc[matrixID][*i] = true;
+    }
+}
+
 std::string User::toCSV(){
     int recip = 0;
     

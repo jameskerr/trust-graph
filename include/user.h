@@ -26,13 +26,16 @@ public:
 	inline void trusts(int u) 		{ trust_list.insert(u); }
 	inline int 	trustedByCount() 	{ return trusted_by_list.size(); }
 	inline void isTrustedBy(int u)  { trusted_by_list.insert(u); }
+    void updateNeighbors(bool**);
+    
     std::string toCSV();
 
-    void activate()                 { isActive = true; }
+    void activate(int x)            { isActive = true; matrixID = x; }
     bool active()                   { return isActive; }
     
 private:
 	int id;
+    int matrixID;
 	bool isActive;
     
 	std::set<int> trust_list;
