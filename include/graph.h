@@ -17,7 +17,7 @@ public:
 	virtual ~Graph();
 
 	// PUBLIC FUNCTIONS
-	void shortestPath(int a, int b);
+	int shortestPath(int a, int b, int trust_type);// trust_type is 0 for trusting, 1 for trusted by
 	void topTrusting(int limit);
 	void topTrusted(int limit);
 	void inspect(int key);
@@ -25,6 +25,9 @@ public:
     void getTransClosure();
     void transitiveConnection(int a, int b);
     void toCSV();
+    void showStats();
+    float average(int trust_type);
+    void menu();
     
     // Getters
     int getNumNodes()   { return numNodes; }

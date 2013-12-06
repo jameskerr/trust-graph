@@ -4,8 +4,6 @@ Assignment 6
 
 COLLABORATORS:
 
-
-
 Reed Halberg
 
 1344116
@@ -13,8 +11,7 @@ Reed Halberg
 
 James Kerr
 
-ID#
-
+ID# 1191659
 
 ===============
 
@@ -30,7 +27,6 @@ CITATIONS:
 
 
 We used our notes from class, or general tinkering to solve a much as we could.
-
 
 
 To represent the graph, we used maps and sets and referred to these sites:
@@ -50,11 +46,6 @@ To see if an element was in a set (for reciprocity):
 http://stackoverflow.com/questions/1701067/how-to-check-that-an-element-is-in-a-stdset
 
 
-
-
-
-
-
 ===============
 
 COMMENTS:
@@ -69,9 +60,7 @@ REED:
 
 JAMES:
 
-
-
-
+After working out Djykstra's algorithm on paper many times, it was nice to finally implement it.  I also enjoyed using the standard library.  It helps so much to read about these structures and know how will they perform thanks to the newfound algorithm analysis knowledge that I have gained in this class.
 
 ===============
 

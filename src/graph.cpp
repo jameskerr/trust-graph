@@ -1,6 +1,5 @@
 #include "graph.h"
-
-
+#include "tools.h"
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -25,15 +24,17 @@ Graph::~Graph() {
 	//
 }
 
-void Graph::shortestPath(int a, int b) {
+int Graph::shortestPath(int a, int b, int trust_type) { // trust_type is 0 for trusting, 1 for trusted by
+	int distance = 0; // This will be the return value
+
 	// Neither of them exist
 	if (al.find(a) == al.end()) {
 		cout << "User #" << a << "does not exist" << endl;
-		return;
+		return -1;
 	}
 	if (al.find(b) == al.end()) {
 		cout << "User #" << b << "does not exist" << endl;
-		return;
+		return -1;
 	}
 
 	std::queue<int> pending;
@@ -43,10 +44,15 @@ void Graph::shortestPath(int a, int b) {
 	path[a] = SearchNode(-1,0); // id, parent, cost 
 	pending.push(a);
 
+
+	
+	
 	while (pending.size() != 0) {
 		int current = pending.front(); pending.pop();
-
-		for (std::set<int>::iterator i = al[current].trust_list.begin(); i != al[current].trust_list.end(); ++i){
+		
+		std::set<int>::iterator i = (trust_type == 1) ? al[current].trusted_by_list.begin() : al[current].trust_list.begin();
+		std::set<int>::iterator end = (trust_type == 1) ? al[current].trusted_by_list.end() : al[current].trust_list.end();
+		for (; i != end; ++i){
 			if (*i == b) {
 				cout << "I found the shortest path!" << endl;
 				int cursor = current;
@@ -54,9 +60,10 @@ void Graph::shortestPath(int a, int b) {
 				while (cursor >= 0) {
 					cout << cursor << endl;
 					cursor = path[cursor].parent;
+					distance++;
 				}
-				return;
-			}// all done
+				return distance;
+			} // all done
 			if (visited.find(*i) != visited.end()) continue;
 			pending.push(*i);
 			if (path[*i].cost > path[current].cost + 1) {
@@ -67,6 +74,7 @@ void Graph::shortestPath(int a, int b) {
 		visited.insert(current);
 	}
 	cout << "There is not a connection between the two." << endl;
+	return -1; // Returns -1 if there is not a connection
 }
 
 
@@ -226,6 +234,11 @@ void Graph::getTransClosure(){
 void Graph::transitiveConnection(int a, int b){
     if (!transClosureCaclulated){
         cout << "Must first calculate transitive closure." << endl << "WARNING: This will take a considerable amount of time." << endl;
+        std::string choice = getString("Would you like to? (y/n)\n");
+        if (lowerCase(choice) == "y")
+        	getTransClosure();
+        else
+        	return;
     }
     // Make sure node exists at least once in the map
     else if (al.count(a) && al.count(b)){
@@ -258,3 +271,60 @@ void Graph::toCSV(){
     file.close();
     
 }
+
+void Graph::menu() {
+	cout << "#### EPINONS GRAPH ANALYSIS ####" << endl;
+	cout << "_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-" << endl;
+	cout << endl;
+	cout << "1: Lookup user by ID#" << endl;
+	cout << "2: Show top most trusted users" << endl;
+	cout << "3: Show top most trusting users" << endl;
+	cout << "4: Shortest trust path between two people" << endl;
+	cout << "5: Shortest trusted by path between two people" << endl;
+	cout << "6: Connection test between two people" << endl;
+	cout << "7: Show stats about the graph" << endl;
+	cout << "8: Output data to a csv file" << endl;
+	cout << "9: Quit" << endl;
+	cout << endl;
+	cout << "_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-" << endl;
+}
+
+void Graph::showStats() {
+	std::map<int,int>::reverse_iterator trusts, trusted_by;
+	trusts = most_trusting.rbegin();
+	trusted_by = most_trusted.rbegin();
+
+	cout << "GRAPH STATS" << endl;
+	cout << "Number of nodes: " << getNumNodes() << endl;
+	cout << "Number of edges: " << getNumEdges() << endl;
+	cout << "Most trusts to others by user: " << trusts->first << endl;
+	cout << "Most trusts to user by others: " << trusted_by->first << endl;
+	cout << "Average trust to others: " << average(0) << endl;
+	cout << "Average trust from others: " << average(1) << endl;
+}	
+
+float Graph::average(int trust_type) {
+	std::map<int,int>::iterator i = (trust_type == 1) ? most_trusted.begin() : most_trusting.begin();
+	std::map<int,int>::iterator end = (trust_type == 1) ? most_trusted.end() : most_trusting.end();
+	
+	float sum = 0.0;
+	float count = 0.0;
+
+	for (; i != end; ++i) {
+		sum += (float)i->first;
+		count += 1.0;
+	}
+	return (sum / count);
+}
+
+
+
+
+
+
+
+
+
+
+
+
