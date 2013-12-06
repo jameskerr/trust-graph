@@ -13,7 +13,7 @@ int main() {
 	//g.shortestPath(31, 888);
 	
     //g.toCSV();
-    g.getTransClosure();
+    //g.getTransClosure();
     
     cout<< "NumNodes: " << g.getNumNodes() << endl;
     cout << "Edges: " << g.getNumEdges() << endl;

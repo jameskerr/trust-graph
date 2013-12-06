@@ -23,6 +23,7 @@ public:
 	void inspect(int key);
 	void summary(int key);
     void getTransClosure();
+    void transitiveConnection(int a, int b);
     void toCSV();
     
     // Getters

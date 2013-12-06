@@ -223,6 +223,26 @@ void Graph::getTransClosure(){
     transClosureCaclulated = true;
 }
 
+void Graph::transitiveConnection(int a, int b){
+    if (!transClosureCaclulated){
+        cout << "Must first calculate transitive closure." << endl << "WARNING: This will take a considerable amount of time." << endl;
+    }
+    // Make sure node exists at least once in the map
+    else if (al.count(a) && al.count(b)){
+        // See if connection exists
+        if (tc[al[a].matrixID][al[b].matrixID]){
+            cout << "User " << a << " and User " << b << " are connected." << endl;
+        }
+        else{
+            cout << "User " << a << " and User " << b << " are not connected." << endl;
+        }
+    }
+    else{
+        cout << "Users could not be found with the given IDs." << endl;
+    }
+    
+}
+
 void Graph::toCSV(){
     std::ofstream file;
     file.open("trustData.csv", std::ios::trunc|std::ios::out);
